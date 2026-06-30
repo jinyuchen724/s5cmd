@@ -351,9 +351,10 @@ func TestAppEndpointURLsValidation(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			_, s5cmd := setup(t)
-
-			cmd := s5cmd(tc.flags...)
+			// Invoke the binary directly instead of the setup() helper,
+			// which injects "--endpoint-url" and would collide with the
+			// "--endpoint-urls" flag under test.
+			cmd := icmd.Command(s5cmdPath, tc.flags...)
 			result := icmd.RunCmd(cmd)
 
 			result.Assert(t, icmd.Expected{ExitCode: tc.expectedExitCode})
