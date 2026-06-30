@@ -45,18 +45,17 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     services:
       minio:
-        image: ${{ (matrix.os == 'ubuntu') && 'minio/minio:latest' || ''}}
+        image: ${{ (matrix.os == 'ubuntu') && 'bitnamilegacy/minio:2023.7.18' || ''}}
         ports:
           - 45677:9000
         options: >-
-          --health-cmd "curl -f http://localhost:9000/minio/health/live || exit 1"
+          --health-cmd "curl -I http://localhost:9000/minio/health/live -s"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
-          MINIO_VOLUMES: /data
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-go@v2
